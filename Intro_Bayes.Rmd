@@ -1,0 +1,314 @@
+---
+title: "Introduction to Bayesian Statistics"
+author: "Laurie Baker"
+date: 'December 3-5, 2019'
+output:
+  ioslides_presentation:
+      incremental: true
+      widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<style>
+div.footnotes {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  width: 80%;
+  font-size: 0.6em;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('slide:not(.backdrop):not(.title-slide)').append('<div class=\"footnotes\">');
+
+  $('footnote').each(function(index) {
+    var text  = $(this).html();
+    var fnNum = (index+1).toString();
+    $(this).html(fnNum.sup());
+
+    var footnote   = fnNum + '. ' + text + '<br/>';
+    var oldContent = $(this).parents('slide').children('div.footnotes').html();
+    var newContent = oldContent + footnote;
+    $(this).parents('slide').children('div.footnotes').html(newContent);
+  });
+});
+</script>
+
+## Alan Turing and Enigma
+
+![Alan Turing](pictures/alan_turing.jfif){width=200px}
+![Enigma](pictures/enigma_machine.jpg){width=300px}
+ 
+ - Cracked the engima machine in WWII
+ 
+ 
+## Nate Silver and the U.S. Elections
+
+![Nate Silver](pictures/nate_silver.jfif){width=180px}
+![Election](pictures/election_prediction.jpg){width=300px}
+
+- Nate Silver, statistician and found of 538.org, successfully predicted the outcome of the 2 Obama elections, and the 
+  - Using polls, demographic data, other metrics. 
+
+
+## Introduction
+
+What do Alan Turing and Nate Silver have in common?
+
+ - Worked on complex problems
+ - Large inherent uncertainty that needed to be quantified
+ - Requires efficient integration of many sources of information
+ - Used Bayesian Analysis. 
+
+## What is Bayesian data analysis?
+
+ Method for figuring out **unknowns** that requires 3 things
+
+ 1. **Data**
+ 2. **A generative model:** any model we can simulate data from
+ 3. **Priors:** existing information or current knowledge
+
+## Generative models
+
+When we know the *parameters* we can **simulate** *data*
+
+<center><img src="pictures/pre_bayes.png" height="400px" /></center>
+
+## Generative models
+
+Using **Bayesian inference**, we can estimate *parameters* from *data*
+
+<center><img src="pictures/post_bayes.png" height="400px" /></center>
+
+## What is Bayesian inference?
+
+To understand it we need to know about
+
+  - Probability
+  - Bayes' theorem
+  - Likelihood, Posteriors, and Priors
+
+## Probability
+
+- `Probability` is the chance of an event occurring, defined between 0 and 1.
+
+    - 0 = will never happen, 1 = will always happen
+
+- `Random Variable` is the variable that takes values depending on outcomes of random events.
+    - Discrete (e.g. dead/alive) or Continuous (e.g. age, weight).  
+
+- `Probability distribution` describes how the probabilities are distributed over the values of the random variable.
+    
+- To define a probability need
+    - To identify all possible outcomes (events), i.e. **sample space**
+    - Calculate the frequency the event occurs
+    
+## Probability Notation
+
+ - $P()$, probability.
+ - $P(A)$, probability of Event A.
+ - $P(B)$, probability of Event B.
+ - $P(A \cup B)$ The probability of Event A or the probability of Event B occurring
+ - $P(A \cap B)$ The probability of both Event A and Event B occurring.
+ - $P(A | B)$ The probability of Event A given Event B has already occurred
+ 
+## Probability Rules
+
+  - The probability must be non-negative for each value of the random variable and the sum of probabilities must equal 1.
+
+  - If two events (A and B) are **mutually exclusive**, the probability that either occurs is the sum of their individual probabilities  $P(A \cup B)$: 
+    - e.g. $P(\text{HIV} \cup \text{HIV-})$ = $P(\text{HIV}) + P(\text{HIV-})$.
+    
+  - If two events **are not mutually exclusive**, we need to correct for double counting: 
+    - e.g. $P(\text{HIV or Female})$ = $P(\text{HIV})$ + $P(\text{Female})$ - $P(\text{HIV} \cap \text{Female})$
+    
+## Conditional Probability
+
+- The **conditional probability** of $A$ given $B$, $P(A|B)$, 
+  - $P(A|B) = \frac{P(A \cap B)}{P(B)}$
+- Conditional probability of an individual having HIV and being Female is:
+  - $P(\text{HIV | Female}) = \frac{P(\text{HIV} \cap \text{ Female})}{P(\text{Female})}$
+
+## Conditional Probability and Bayes' Rule
+
+- **Bayes' Rule** is a recipe for turning around a conditional probability so we can learn about the thing we are interested in. 
+ 
+- Use Bayes' Rule to go from the likelihood $P(\text{Data}|\text{Hypothesis})$ to the information we want:
+    - $P(\text{Hypothesis}|\text{Data})$.
+
+- **Bayes' Theorem**: 
+    - $P(\text{Hypothesis}|\text{Data}) = \frac{P(\text{Data}|\text{Hypothesis})P(\text{Hypothesis})}{P(\text{Data})}$
+
+## The Zombie Apocalypse
+
+<center><img src="pictures/Zombie.jpg" height="280px" /></center>
+
+- Probability of having the Zombie virus $I$ is ${\color{red}{P(\text{Infected})}} = 10^{-6}$
+- Zombie Test has no false negatives: ${\color{blue}{P(\text{Test positive}|\text{Infected})}} = 1$. 
+- Some false positives: ${\color{orange}{P(\text{Test positive}| \text{Uninfected})}} = 10^{-2}$
+
+<div class="notes">
+- You've tested positive and need to convince your friends not to banish you. 
+</div>
+
+## Zombie Apocalypse
+
+- **Bayes' Theorem**: 
+    - $P(\text{Hypothesis}|\text{Data}) = \frac{P(\text{Data}|\text{Hypothesis})P(\text{Hypothesis})}{P(\text{Data})}$
+
+- Replacing **Hypothesis** with "Infected" and **Data** with "Test positive":
+    - $P(\text{Infected}|\text{Test positive}) = \frac{P(\text{Test positive|Infected})P(\text{Infected})}{P(\text{Test positive})}$
+ 
+- Unknown probability of Testing Positive $P(\text{Test positive})$ in the population?
+
+## Zombie Apocalypse
+  
+  Probability of Testing Positive: $P(\text{Test Positive})$
+  
+  - 2 groups will test positive: Infected and Uninfected
+  
+  - $= P(\text{Test Positive} \cap \text{Infected}) + P(\text{Test Positive} \cap \text{Uninfected})$ which is equivalent to
+  
+  - $= P(\text{Test positive}|\text{Infected})P(\text{Infected})$ + $P(\text{Test positive|Uninfected})P(\text{Uninfected})$
+  
+  - Being infected and uninfected are mutually exclusive so 
+  - $P(\text{Uninfected}) = 1-P(\text{Infected})$
+
+## The Zombie Apocalypse
+
+<center><img src="pictures/Zombie.jpg" height="280px" /></center>
+
+- Probability of being infected:  ${\color{red}{P(\text{Infected})}} = 10^{-6}$
+- Probability of testing positive given you are infected: ${\color{blue}{P(\text{Test positive}|\text{Infected})}} = 1$. 
+- Probability of testing postiive given you are uninfected ${\color{orange}{P(\text{Test positive}| \text{Uninfected})}} = 10^{-2}$
+  
+## Zombie Apocalypse
+  Probability of Testing Positive: swapping in what we know
+  
+  - $= {\color{blue}{P(\text{Test positive}|\text{Infected})}}{\color{red}{P(\text{Infected})}}$ + ${\color{orange}{P(\text{Test positive}|\text{Uninfected})}}(1 - {\color{red}{P(\text{Infected})}})$
+
+  - Gives us: $= {\color{blue}{1}}\times{\color{red}{10^{-6}}} + {\color{orange}{10^{-2}}}\times(1 - {\color{red}{10^{-6}}})$
+  - $=10^{-6} + 10^{-2}+ 10^{-8}$
+  - ${\color{green}{\approx 10^{-2}}}$
+
+<div class="notes">  
+Since $10^{-6}$ is ten thousand times smaller than $10^{-2}$, and $10^{-8}$ is a million times smaller, we can neglect them for now and say that the probability of testing positive is around $10^{-2}$.
+</div>
+
+## Zombie Apocalypse
+
+$P(\text{Infected}|\text{Test positive}) = \frac{{\color{blue}{P(\text{Test positive|Infected})}}{\color{red}{P(\text{Infected}}})}{{\color{green}{P(\text{Test positive})}}}$
+ 
+- If we plug in what we know: 
+    - ${\color{blue}{P(\text{Test positive|Infected})}}$ = 1
+    - ${\color{red}{P(\text{Infected})}}$ = $10^{-6}$
+    - ${\color{green}{P(\text{Test positive})}}$ = $10^{-2}$
+- $\frac{{\color{blue}1}\times{\color{red}{10^{-6}}}}{{\color{green}{10^{-2}}}} = 0.00001$ 
+
+- Phew! Even though false positives are unlikely, the chance you are a zombie is roughly 1 in 10,000.
+
+<div class="notes">
+Phew! Even though false positives are unlikely, the chance that you are a zombie if you test positive is still only 1 in 10,000. 
+
+</div> 
+
+
+## Bayes' Theorem
+
+Bayes' Rule is general, our hypothesis and data can be any events. We are often using it in our models to assess our parameters. 
+
+<center><img src="pictures/post_bayes.png" height="300px" /></center>
+
+
+## Prior, Likelihood, Posterior
+
+$$ P(Parameters \mid Data) = \frac{P(Data \mid Parameters) \, P(Parameters)}{P(Data)} $$
+ - Prior Knowledge + Current Data = Current Knowledge
+
+ - **Prior distribution:** what you know about the parameters, before getting the data - $P(Parameters)$. 
+ - **Likelihood:** based on modeling assumptions, how likely are the data *if* the chosen values for our parameters are correct - $P(Data|Parameters)$
+ 
+ - **Posterior:** probability of the chosen parameters given the Data, $P(Parameters|Data)$.   
+
+ - We can keep adding data and updating the posterior (our current knowledge of the process) as data becomes available. 
+
+## Where do priors come from?
+
+ - **Priors** come from all information **external** to the current study (i.e. everything else)
+    - Other studies, expert opinion, experiments etc. 
+    - We may inherently know something about the prior 
+        - e.g. it can't be less than 0, or that it comes from a gamma distribution.
+    - Flat, "uninformative" priors
+
+## Priors and Uncertainty
+
+<center><img src="pictures/uncertainty_eg.png" height="400px" /></center>
+
+
+## Your Turn
+
+Draw a prior for the percentage of the earth that is water. 
+
+<center><img src="pictures/globe.jpg" height="400px" /></center>
+
+## Bayesian vs. Frequentist 
+
+<center><img src="pictures/Bayes_Fisher.jfif" height="300px" /></center>
+
+**Who would win in a fight between Thomas Bayes and Ronald Fisher?**
+
+
+## Bayesian vs. Frequentist
+
+- **Frequentist statistics** 
+    - Classical statistics, p-values, null hypotheses, repeated experiments.
+        - e.g. probability explained flipping coins
+    - Assumes that there is a "true" state of the world which gives rise to a distribution of possible experimental outcomes. 
+    - In frequentist view of probability, probability depends on a
+series of hypothetical repeated experiments.
+    - The underlying parameters and probabilities remain constant during this repeatable process.
+
+## Bayesian vs. Frequentist 
+
+- **Bayesian Statistics**
+    - Assumes the data is truth, while the parameter values or hypotheses have probability distributions. 
+    - In a Bayesian view of probability, we interpret the probability distribution as quantifying uncertainty about the world. 
+    - In Bayesian statistics, answers depend on what was observed (e.g. the data).
+    - Allow us to make statements about the probability of different hypotheses or parameter values. 
+
+## Advantages of Bayesian Approach
+
+1. Can incorporate prior observations and prior knowledge
+
+2. Useful in complex models with missing data and several layers of variability
+
+3. Can be used to make management decisions based on our data, including evaluating unlikely scenarios.
+
+## Disadvantages of Bayesian Approach
+
+- Computationally expensive. 
+- In Bayesian statistics, we have to specify our *prior beliefs* about the probability of different hypotheses.
+    - These prior beliefs actually affect our answers.
+    - You can get back what you put in and confirm your hypotheses.
+- To deal with subjectivity
+    - Set a "flat prior" or uninformative prior to let the data speak for themselves.
+    - Sensitivity analyses: try different priors and see whether it influences the results. 
+    - Use of "penalized-complexity priors"
+    
+## Practical
+
+<center><img src="pictures/globe.jpg" height="400px" /></center>
+
+
+## References 
+
+* Ben Bolker, Ecological Models and Data in R
+* Introduction to Bayesian Data Analysis by Rasmus B&aring;&aring;th https://www.youtube.com/watch?v=3OJEae7Qb_o
+
+

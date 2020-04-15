@@ -1,0 +1,1322 @@
+---
+title: "<font size='4'>Robust Stats</font>" 
+
+author: "Dr Paraskevi Pericleous"
+
+output: 
+  html_document:
+    number_sections: true
+    theme: united
+    toc: yes
+    toc_float: yes
+---
+
+<style>
+
+img[alt='logo']{
+    width: 31%;
+    height: auto;
+}
+
+.freqdist .figure{
+  text-align: center;
+}
+
+.freqdist .figure img{
+  width: 80%;
+}
+
+#flowChart{
+  display: flex;
+  flex-direction: row;
+}
+
+#flowChart .step{
+  border: 3px solid black;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+#flowChart .arrow{
+  align-self: center;
+  font-size: 30px;
+}
+</style>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE}
+htmltools::img(src = knitr::image_uri("DataScienceCampus.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px;')
+```
+
+<br> 
+
+**Audience:** Diverse Background
+
+<br>
+
+**Time:** 3 day workshop (18 hours)
+
+<br>
+
+**Pre-Requisites:** Intro to Python (Data Science Campus).
+
+<br>
+
+**Brief Description:** 
+
+<br>
+<br>
+
+**Aims, Objectives and Intended Learning Outcomes:** 
+
+<br>
+
+By the end of Chapter 1, learners should know what (add what they are expected to do in Python):
+
+  the probability and random variable are
+  the difference between discrete and continuous variables
+  what the probability mass function and cummulative distribution function are
+  what are the measures of location and spread of a distribution
+  when a random variable follows the discrete distributions: Bernoulli, Binomial, Geometric, Negative Binomial and Poisson and how they are related 
+  when a random variable follows the continuous distributions: Uniform, Normal, Exponential and Gamma
+  what are: the sampling distribution, central limit theorem and standard error
+
+
+By the end of Chapter 2, learners should know:
+  what is hypothesis testing and a framework on how they should be using it
+  they should know how to perform hypothesis testing for:
+      a single mean, single proportion by using the sample to make inferences about the population
+      comparing variances between two samples
+      comparing means between two groups (parametric & non-parametric, paired and unpaired)
+      comparing proportions between two groups
+      comparing counts in contigency tables
+      understand the concepts of sample size, power, Type I and II errors, sensitivity, specificity, accuracy and agreement
+      what is a bad hypothesis
+      
+      
+By the end of Chapter 3, learners should know the:
+      what is a linear regression, what assumptions we make to fit this kind of model,
+      how we fit a linear regression, 
+      how to check the assumptions and other model diagnostics (such as influential observations)
+      how we select and compare models
+      how we interpret the results
+      
+
+By the end of Chapter 4, learners should know the:
+      what a generalised linear model is, the types of glms, when we fit each type of glm,
+      what assumptions we make when we fit these kind of models
+      how we fit these kinds of models,
+      how we test the assumptions
+      how we interpret the outcome
+      
+      
+By the end of Chapter 5, learners should know the:
+      conditional probability and inference
+      Baye's theorem
+      law of total probability
+      be able to perform hypothesis testing using a Bayesian approach
+      be able to fit a linear model using a Bayesian approach
+      understand the differences between a Frequentist and Bayesian Approach
+
+By the end of Chapter 6, learners should know the:
+      what is dimensionality reduction, why we need it, advantages and disadvanatages
+      what the components based methods are and how to apply them: Factor Analysis, PCA and ICA
+      what the projection based methods are such as t-Distributed Stochastic Neighbor Embedding t-SNE (no need to learn how to apply those)
+
+By the end of Chapter 7, learners should know:
+      what are the missingness mechanisms
+      possible ways to deal with missing values
+      when each method is better to do and when
+      be able to apply all these methods in Python
+      
+By the end of Chapter 8, learners should be aware of data issues such as:
+      accuracy, quality, privacy, overfitting, non-identifiability, non-collapsibility, assumptions, limitations
+      
+By the end of Chapter 9: learners should feel confident to handle large datasets, with missing values that may or may need dimensionality reduction, identify the right model to fit, check any assumptions are valid, check additional model diagnostics and be able to communicate the results. 
+
+<br>
+
+**Libraries Needed** 
+
+<br>
+
+```{r, echo=FALSE}
+library(reticulate)
+use_python("/Library/Frameworks/Python.framework/Versions/3.7/bin/python3")
+```
+
+# Probability and Distributions
+
+## Probability and Random Variable (Discrete and Continuous) 
+
+`Probability` is the term used to describe how likely it is for an event to occur. 
+
+`Random Variable` is the variable that takes values depending on outcomes of random events. It can be discrete if it can take distinct, separate values (gender) or continuous (age, weight).  
+
+**Famous Example:**
+
+Supposed I am tossing a coin and I want to see the outcome. The possible outcomes are: Heads or Tails.
+
+Then, we let X be the random variable that is the outcome of the coin. X can only take the discrete values: Heads, Tails
+
+## Probability Mass Function 
+
+Suppose that we are holding a fair coin:
+
+\begin{center}
+\captionof{table}{Probability Mass Function of a Fair Coin}
+\begin{tabular}{|l|l|}
+\hline
+X & Heads & Tails \\ \hline
+P(X = x) & $\frac{1}{2}$ & $\frac{1}{2}$ \\ \hline
+\end{tabular}
+\end{center}
+
+
+    X      |  Heads       |    Tails
+-----------|--------------|-------------
+  $P(X = x)$ |$\frac{1}{2}$ | $\frac{1}{2}$
+  
+  
+$P(X = x)$ is called the probability mass function of the discrete random variable variable X, it is non-negative and the $\sum_{1}^{2}{P(X=x)} = 1$
+
+
+## Cummulative Distribution Function
+
+The cummulative distrivution function is defined as $F(x) = P(X \leq x)$ for every x in the real numbers set.
+
+$F(x)$ is non-decreasing, $0 \leq F(x) \leq 1$ and for discrete random variables $F(x)$ is a step function.
+
+
+## Measures of location and spread
+
+### Mean
+
+The mean $\mu$ (or expectation $E(X)$) is the average of quantified outcomes: $E(X) = \sum_{i}{x_{i}P(X = x_i)}$ (central tendency-location measure).
+
+
+### Variance
+
+$var(X) = E(X- \mu)^{2} = E(X- E(X))^{2}$ (spread measure).
+
+The standard deviation $\sigma$ is the square root of the variance (measure of spread in the same units as X).
+
+Both, the variance and the standard deviation are non-negative quantities. They can both be zero, if and only if X is constant.
+
+## Discrete Distributions
+
+### Bernoulli
+
+Let us conduct an experiment that can only have two outcomes, success or failure. We will denote success with 1 and failure with 0.
+
+Let $X$ be the random variable that denotes the number of successes in the experiment with $P(success) = p$, then $X \sim Ber(p)$.
+
+  Outcome  |  Success   |   Failure
+-----------|------------|-------------
+    X      |    1       |     0
+  P(X = x) |    p       |   1-p
+    
+
+### Binomial
+
+Suppose that we need to repeat the above experiment $n$ times independently. Now, we will denote $X$ as the random variable that denotes the number of successes in the $n$ repetitions of the experiment. 
+
+$X \sim Bin (n, p)$.
+
+### Geometric
+
+Suppose that we want to keep repeating the experiment until the outcome that we want occurs (eg. success). Probability of success is the same as above. 
+$X$ is now the number of independent experiments needed until a success occurs. Now, $X \sim Geo (p)$.
+
+### Negative Binomial
+
+Suppose that we want to keep repeating the experiment until the r<sup>th</sup> success occurs. Now, $X$ is the number of independent experiments needed until the r<sup>th</sup> success occurs with probability of success same as above and thus, $X \sim NB (r, p)$.
+
+### Poisson
+
+Suppose that we are interested in $X$ which is the number of times (count) a random event occurs in a given time-frame with a rate of occurence $\lambda$. Then, $X \sim Poi (\lambda)$.
+
+## Conditional Probability and Independence
+
+## Continuous Distributions
+
+### Uniform
+
+If $X$ is the random variable that can take any value within the interval $(a, b)$, the $X \sim U (a, b)$. 
+
+### Normal
+
+### Exponential
+
+Let $X$ be the time until the first event occurs in a Poisson process with rate $\lambda$. Then, $X \sim Exp (\lambda)$.
+
+### Gamma
+
+If $X$ is the time until the a<sup>th</sup> event occurs in a Poisson process with rate $\lambda$. Then, $X \sim Gam (a, \lambda)$.  
+
+## Sampling Distribution
+
+## Central Limit Theorem
+
+## Standard Error
+
+## Summary Statistics
+
+# Hypothesis Testing 
+
+## Framework (Steps)
+
+## Testing distributional assumptions
+
+## One sample 
+
+### Hypothesis test for a single mean
+Supposed we want to test whether a single sample mean $\bar{x}$ comes from a population with mean $\mu$. To do this, we need to conduct a hypothesis test for a single mean and define the null and alternative hypothesis.  
+
+The null hypothesis $H_0$ will be tested against the alternative hypothesis $H_1$ ie
+
+$H_0: \mu=5$
+
+$H_1: \mu\neq5$
+
+Now, we need to decide which test is appropriate to use. For a single mean we use a t-test.
+
+$t_{statistic}=\frac{\bar{x}-\mu}{SE_{\bar{x}}} \sim T_{n-1}$, has a t-distribution with $n-1$ degrees of freedom.
+
+If we find that t-statistic is 7.125 wit 749 degress of freedom that give a p-value<0.0001. Say we want to use $\alpha=0.05$. p-value is less than a and therefore we have enough evidence to reject the null. We need to be careful with the interpretation though. We can say that there is enough evidence based on our sample to believe that the population mean is not 5. This could mean that $\mu$ is either below or above 5. 
+
+We have used a two-sided test since we our alternative hypothesis states that $\mu$ could be either smaller or larger than 5.
+
+**Example**
+
+Recall class 1.
+
+```{r}
+class_1<- c(50, 75, 100, 35, 90, 20)
+mean_1<- mean(class_1)
+mean_1
+```
+
+Suppose we want to determine whether this sample class comes from a population that has mean $\mu=70$ or not. We will use a two-tail test.
+
+The null hypothesis $H_0$ will be tested against the alternative hypothesis $H_1$ ie
+
+$H_0: \mu=70$
+
+$H_1: \mu\neq70$
+
+```{r}
+sd_1<- sd(class_1)
+n_1<- length(class_1)
+
+se_1<- sd_1/sqrt(n_1)
+
+mu_1<- 70 #under null hypothesis
+
+t.stat<- (mean_1-mu_1)/(se_1)
+t.stat
+
+df_1<- n_1-1
+df_1
+
+2*pt(t.stat, df_1) #p-value for two sided 
+```
+
+Our chosen significance level is $\alpha=0.05$ and the p-value is larger than that and thus, there is no evidence to reject the null hypothesis
+
+**Alternative Way**
+```{r}
+t.test(class_1, mu=70)
+```
+
+## Two samples
+
+### Comparing two variances (Fisher's F test)
+
+Let $\bar{X_1}$ and $\bar{X_2}$ be the sample mean for group 1 and group 2. Recall that the sample variance is given by $s^2=\frac{\sum_{i=1}^{N}{(\bar{X}-X_{i})^2}}{N-1}$ for small samples and let $s^2_1$ and $s^2_2$ denote the sample variances for group 1 and group 2, respectively (group 1 to be the one with the larger variance). $\sigma^2_1$ and $\sigma^2_2$ denote the population variances for group 1 and group 2 respectively.
+
+Let us construct the hypothesis:
+
+$H_0: \sigma^2_1 = \sigma^2_2$
+
+$H_1: \sigma^2_1 \neq \sigma^2_2$
+
+Then the ratio $\frac{\sigma^2_1}{\sigma^2_2}$ follows an F-distribution with $n_1-1$ and $n_2-1$ degrees of freedom. The F-test assumes that both groups come from populations that are normally distributed. It is really sensitive to this assumption, and there alternatives tests like Levene's, Bartlett's and the Brown-Forsythe test (beyond this course). 
+
+**Example**
+
+Suppose we have two samples. The results of a quiz from two classes and we want to determine whether the first class has the same or larger variance than the second one. Let $s^2_1$ and $s^2_2$ denote the class with the higher sample variance and the class with the lower sample variance respectively. $\sigma^2_1$ and $\sigma^2_2$ denote the population variance for group 1 and group 2 respectively.
+
+$H_0: \sigma^2_1 = \sigma^2_2$
+
+$H_1: \sigma^2_1 > \sigma^2_2$
+
+```{r}
+class_1<- c(50, 75, 100, 35, 90, 20)
+class_2<- c( 70, 77, 80, 65, 71)
+
+var_1<- var(class_1)
+var_1
+var_2<- var(class_2)
+var_2
+
+
+n_1<- length(class_1)
+n_2<- length(class_2)
+
+f.test<- var_1/var_2
+f.test
+
+df_1<- n_1-1
+df_2<- n_2-1
+
+qf(0.95, df_1, df_2) #critical value for alpha=0.05 with degrees of freedom df_1, df_2
+
+1-pf(f.test, df_1, df_2) #p-value for one-tail test. If it was a two-tail test it would be 2*(1-pf(f.test,df_1,df_2))
+``` 
+
+If the F-test gives the same or equal value than the critical value, then we have evidence to not fail to reject the null hypothesis i.e. there is evidence that the first variance is larger than the second one. Or we can say that the p-value is smaller than the chosen 0.05 level, and thus the we cannot fail to reject the null hypothesis. 
+
+**Alternative Way**
+```{r}
+var.test(class_1, class_2, alternative = "greater")
+```
+
+
+### Comparing means between two groups (unpaired t-test)
+
+Now, let us think that we have two different groups of people, say men and women, and we want to compare the two means of the two groups. Let $\mu_1$ be the true mean for men and $\mu_2$ be the true mean for women. We want to test whether there is a difference between $\mu_1$ and $\mu_2$
+
+Let us construct our null and alternative hypotheses.  
+
+$H0:\mu_1=\mu_2$
+
+$H1:\mu_1\neq\mu_2$.
+
+the appropriate statistical test here is t-test.
+
+
+**Assumptions:**
+
+1. The two groups are independent;
+2. The observations within each group are independent;
+3. The variance of the measurements within each group are similar;
+4. The observations from each of the groups are normally distributed.
+
+3 and 4 can be tested. For 1 and 2 however we need to use the knowledge that we have of the data. 1 is true if the values from one group do not affect the values of the other group. If here we are talking about BMI in the two groups, then they are indeed independent. 2 is also true since one's BMI is not related to another person's BMI. We learned how to test 4 in Workshop 2. 
+
+
+**If we assume that the variances of the two groups are equal:**
+The t statistic to test whether the means are different can be calculated as follows:
+$$
+t = \frac{\bar {X}_1 - \bar{X}_2}{s_{1 2} \cdot \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}$$
+where
+$$ s_{1 2} = \sqrt{\frac{(n_1-1)s_{1}^2+(n_2-1)s_{2}^2}{n_1+n_2-2}}.$$
+$\bar{X}_1$ and $\bar{X}_2$ are the sample means for group 1 and group 2 respectively. $s_{1 2}$ is the pooled standard deviation of the two samples, $s^2_{1}$ and $s^2_{2}$ are the sample variances and $n_1$ and $n_2$ are the sample sizes of group 1 and group 2 respectively. The degrees of freedom are calculate as $n_1+n_2-2$.     
+
+**If we assume that the variances of the two groups are not equal(Welch's test):**
+The t statistic to test whether the means are different can be calculated as follows:
+$$
+t = \frac{\bar {X}_1 - \bar{X}_2}{\sqrt{\frac{s^2_1}{n_1}+\frac{s^2_2}{n_2}}}$$
+with degrees of freedom
+$$ d.f.=\frac{(\frac{s^2_1}{n_1}+\frac{s^2_2}{n_2})^2}{(\frac{s^2_1}{n_1})^2/(n_1-1)+(\frac{s^2_2}{n_2})^2/(n_2-1)}$$
+
+$\bar{X}_1$ and $\bar{X}_2$ are the sample means for group 1 and group 2 respectively. $s_{1 2}$ is the pooled standard deviation of the two samples, $s^2_{1}$ and $s^2_{2}$ are the sample variances and $n_1$ and $n_2$ are the sample sizes of group 1 and group 2 respectively.   
+
+If the t value is calculated as 0.4122 and the chosen significance level is 0.05, then there is no evidence to reject the null hypothesis.Thus, there is probably no significant difference between the two groups ie $\mu_1=\mu_2$.
+
+
+**Note 1:** When the assumption of normality is not satisfied, t-test is not appropriate. We can use a non-parametric test: Mann-Whitney (Wilcoxon Rank Sum) test to test the equality of the medians.
+
+**Note 2:** Statistical Independence means that when having two or more groups then one group's values do not affect another group's values. If there were two groups, however, with the same people weighing them before and after a diet pill, then these two groups would not be independent. In this case, a paired test is appropriate (next section). within each group, however, for observations to be independent it would mean that the people within a group are not correlated with each other. For instance, family members may not be independent as members of the same family. We will talk about correlation later on.  
+
+**Example**
+
+Recall the example the results of a quiz from the two classes. Suppose we now want to determine whether the two classes come from the same population. Let $\mu_1$ and $\mu_2$ denote the true population means for class 1 and class 2 respectively.
+
+$H_0: \mu_1 = \mu_2$
+
+$H_1: \mu_1 \neq \mu_2$
+
+```{r}
+class_1<- c(50, 75, 100, 35, 90, 20)
+class_2<- c(70, 77, 80, 65, 71)
+```
+
+Let us make the assumption that the two variances are not equal (based on the F-test).
+
+```{r}
+mean_1<- mean(class_1)
+mean_1
+mean_2<- mean(class_2)
+mean_2
+
+n_1<- length(class_1)
+n_2<- length(class_2)
+
+var_1<- var(class_1)
+var_1
+var_2<- var(class_2)
+var_2
+
+numerator_t<- mean_1-mean_2
+denominator_t<- sqrt(var_1/n_1+var_2/n_2)
+
+t_test<- numerator_t/denominator_t
+t_test
+
+df_num<- (var_1/n_1+var_2/n_2)^2
+df_denom<- (var_1/n_1)^2/(n_1-1)+(var_2/n_2)^2/(n_2-1)
+df_<- df_num/df_denom
+df_
+
+qt(0.95, df_) #critical value for alpha=0.05 with degrees of freedom df_1, df_2
+
+2*pt(t_test, df_) #p-value
+
+```
+
+Since the p-value is larger than $\alpha=0.05$, then we do not have enough evidence to reject the null hypothesis i.e. populations means may be the same.
+
+**Alternative Way**
+```{r}
+t.test(class_1, class_2)
+```
+
+
+##Non-parametric tests - The Mann-Whitney U test (Wilcoxon rank-sum test)
+The Mann-Whitney test is used as a substitution for the unpaired t-test, when the assumptions of normality fail to be satisfied. This kind of test compares the median values in the two groups and not the mean like the t-test. The assumption that is made here is that the data can be ranked. Instead of using the observations, their ranking is used. However, if the data is normally distributed using the Mann-Whitney test would be less porweful thant using the t-test for small samples.  
+
+**Note**
+What is ranking?
+Suppose that we have the observations 8,18,10,15,19. We need to find the order from smallest to highest i.e. 8,10,15,18,19. Then the rank for 8 will be 1, for 10 will be 2, for 15 will be 3 etc.
+
+**Question**
+What is the rank of 19 in this example?
+
+$H_0: median_1 = median_2$
+
+$H_1: median_1 \neq median_2$
+
+
+Let us say that we have two independent groups. We assign the ranks to each observation within each group. If there are tied values then the rank will be the midpoint of the unadjusted rankings eg. both of them will have rank 2.5, but rank 2 and 3 will not be found in our ranking. 
+
+$U_1$ is the sum of all rankings for group 1 and $U_2$ is the sum of all rankings for group 2. You can check that $U_1+U_2=n_1 \cdot n_2$, where $n_1$ and $n_2$ are the sample sizes for groups 1 and group 2 respectively. Then we find the minimum between $U_1$ and $U_2$ along with some other steps (beyond this course) and we use the tables for a Mann-whitney U test to find the p-value. However, the aim here is not to have tables for each test to find the p-value, but rather to understand the test itself. Afterall, we will be using R and R-studio to find these values.
+
+For large sample values a normal approximation is used i.e. when both sample sizes are equal or greater. We will not get into more theoretical details.
+
+If the Mann-whitney U test gives a p-value of 0.062 and the significance value we chose is 0.05, then there is no evidence to reject the null hypothesis. 
+
+**Example**
+
+Suppose we have the same example with the classes.
+
+```{r}
+class_1
+class_2
+```
+Let $median_1$ and $median_2$ denote the true population means for class 1 and class 2 respectively.
+
+$H_0: median_1 = median_2$
+
+$H_1: median_1 \neq median_2$
+
+```{r}
+wilcox.test(class_1, class_2)
+```
+##Hypothesis test for comparison of two dependent means (paired t-test)
+Paired t-test is used when the two samples are not independent. This can happen either when there is one sample that is tested twice (same subjects but different time-points ie repeated measurements) or when there exist two samples that have been paired or matched. Any more theory on this hypothesis test is beyond this course. But, we will learn how to use R to perform a paired t-test.
+
+**Example**
+
+Suppose we have 5 patients. We take their blood pressure before and after taking a treatment to reduce it. Before: 140, 150, 145, 150, 160 and after: 140, 145, 140, 150, 150. We want to test whether the blood pressure has reduced.
+
+Met $\mu_1$ denote the population mean for the measurements before the treatment and $\mu_2$ the populaton mean for the measurements after the treatment. We construct our hypotheses:
+
+$H_0: \mu_1=\mu_2$
+
+$H_1: \mu_1>\mu_2$.
+
+We will use a paired t-test. In R, the unpaired and paired t-test use the same command, but one argument changes. For the paired t-test we used 'paired=T'.
+
+```{r}
+group1<- c(140, 150, 145, 150, 160)
+group2<- c(140, 145, 140, 150, 160)
+
+t.test(group1, group2, paired=T, alternative="greater")
+```
+
+
+##Non-parametric tests - The Wilcoxon matched pairs test (Wilcoxon signed rank test)
+
+The Wilcoxon rank-sum test(Mann Whitney U test) is not the same as the Wilcoxon signed rank test. Both of them are non-parametric and involve summation of the ranks, but Wilcoxon rank-sum test is applied to independent samples (unlike Wilcoxon signed-rank test which is applied to independent).
+
+
+The Mann-Whitney U test (Wilcoxon rank-sum test) is not the same as the Wilcoxon signed-rank test, although both are nonparametric and involve summation of ranks. The Wilcoxon rank-sum test is applied to independent samples. The Wilcoxon signed-rank test is applied to matched or dependent samples. We will not go beyond that.
+
+In R, we use the same command 'wilcox.test' to perform the test, but we also use the argument 'paired=T'.
+
+**Example**
+
+Recall the same example as before but with other measurements and this time we want to perform a non-parametric paired t-test to determine if the two populatio nmeans are equal or not.
+
+Let $median_1$ denote the population mean for the measurements before the treatment and $median_2$ the populaton mean for the measurements after the treatment. We construct our hypotheses:
+
+$H_0: median_1=median_2$
+
+$H_1: median_1>median_2$.
+
+
+```{r}
+group_1<- c(140, 150, 145, 151, 160)
+group_2<- c(139, 138, 141, 142, 159)
+
+wilcox.test(group_1, group_2, paired=T, exact=F)
+```
+
+
+##Hypothesis test for a single proportion 
+This hypothesis test is used to determine whether the value of a proportion is different from the assumption that we have made about it. 
+
+**Example**
+
+Suppose that we have a sample of 200 patients registered in a Salford practice with lung problems. 90 patients were women. If we assume that these 200 patients is a representative sample of all patients with lung problems in the UK, is there sufficient evidence that conclude that the percentage of women on the register is different from 50\%?
+
+First we need to construct the hypotheses. Let $p$ denote the proportion of female patients in the practice with lung problems.
+
+$H_0: p=0.5$
+
+$H_1: p \neq 0.5$.
+
+To determine whether our null hypothesis is true or not, we can use an exact binomial test or z-test for a single proportion. We can use the exact binomial test using the following command. 
+
+```{r}
+binom.test(90, 200, alternative = "two.sided", conf.level = 0.95)
+``` 
+
+If it is appropriate to use a Normal approximation, then the z-test would
+
+$z=\frac{\hat{p}-p}{\sqrt(p(1-p)/n)}$, where $\hat{p}$ is the proportion found from our sample, $p$ takes the value under $H_{0}$ and $n$ is the sample size. Using 
+
+The null hypothesis is that p = 0.5. We begin with computing the test statistic.
+
+```{r}
+k<- 90                          # 90 women-success
+n<- 200                         # sample size
+pbar<- k/n                      # sample proportion
+p0<- 0.5                        # hypothesized value
+z<- (pbar-p0)/sqrt(p0*(1-p0)/n) # z test
+z
+``` 
+
+Then we compute the critical values at 0.05 significance level
+
+
+```{r}
+alpha<- 0.05
+z.half.alpha<- qnorm(1-alpha/2)
+c(-z.half.alpha,z.half.alpha) #standard normal is symmetric around 0
+``` 
+
+The test statistic lies between the critical values. Hence, at 0.05 significance level, we do not reject the null hypothesis.
+
+**Assumptions**
+
+1. The patients in the study are selected randomly from the general populations
+2. A normal approximation can be used. In this course, the condition that we will use is that $n \cdot p$ and $n \cdot (1-p)$ are both greater than 5. So, if $p = 0.1$ and $n = 100$ then both are greater than 5 and thus we can use the normal approximation. 
+
+**Note**
+
+1. Poisson and Normal approximation can be used to approximate Binomial. Some statisticians use different conditions to decide which approximation is appropriate to use. This depends on how accurate they want the approximation to be. It is beyond this course to go into more depth.  
+
+2. There is a continuity correction when approximating a binomial distribution with a normal distribution  
+
+**Alternative way**
+
+```{r}
+prop.test(90, 200, p=0.5, correct=T) 
+``` 
+
+##Hypothesis test for a difference between two proportions
+
+**Example**
+
+Let us return to the same lung problem. Suppose we want to compare the proportion of men who smoke with the proportion of women who smoke. This time we want to determine whether the two proportions are equal or not. Say that 20 women out of 90 are smoking and 40 men are smoking. 
+
+Let us contruct our hypotheses, but first let $p_1$ define the true proportion of men who smoke and $p_2$ the true proportion of women who smoke.
+
+$$H_0: p_1 = p_2$$
+
+$$H_1: p_1 \neq p_2$$.
+
+Let $Y_1$ and $Y_2$ denote the number of male and female smokers respectively and $n_1$, $n_2$ be the number of men and women respectively. For a parametric test we need to use z-test.
+
+$$Z=\frac{p_1-p_2}{\sqrt{\widehat{p}(1-\widehat{p})(\frac{1}{n_1}+\frac{1}{n_2})}}$$, where $\hat{p}=\frac{Y_1 + Y_2}{n_1 + n_2}$.
+
+```{r}
+Y1<- 40
+n1<- 110
+Y2<- 20
+n2<- 90
+p1<- Y1/n1
+p2<- Y2/n2
+phat<- (Y1+Y2)/(n1+n2)
+
+z<- (p1-p2)/(sqrt(phat*(1-phat)*(1/n1+1/n2)))
+z
+``` 
+Then we compute the critical values at 0.05 significance level
+
+
+```{r}
+alpha<-0.05
+z.half.alpha<-qnorm(1-alpha/2)
+c(-z.half.alpha,z.half.alpha) #standard normal is symmetric around 0
+``` 
+
+The test statistic does not lie between the critical values. Hence, at 0.05 significance level, we do reject the null hypothesis.
+
+
+**Assumptions**
+
+1. The two groups are independent;
+2. The individuals within each group are independent;
+3. for this course, when using the normal approximation to the binomial distribution we test that $n*p$ and $n*(1-p)$ are greater than or equal to 5 for both groups, which is true for this example.
+
+**Alternative Way**
+```{r}
+prop.test(x = c(40, 20), n = c(110, 90), correct = T)
+``` 
+
+##Hypothesis test for comparing counts in contigency tables (Pearson's chi-squared test)
+
+Suppose we want to compare if two variables A and B are independent from each other. Let us say that variable A has r levels and variable B has c levels. the null hypothesis states that variable A and B are independent ie. knowing the level of variable A does not help you predict the level of variable B. 
+
+
+$H_0: A \perp \!\!\!\perp B$ (independent)
+
+$H1: A \not\!\perp\!\!\!\perp B$ (not independent).
+
+The expected frequency counts are calculated as $E_{r,c}=n_{r} n_{c}/n$ separately for each level of each categorical variable. $E_{r,c}$ is the expected frequency count for level r of variable A and level c of variable B. $n_r$, $n_c$ and $n$ are the total number of sample observations at level r, level c and the total sample size respectively. 
+
+The $\chi^2$-square statistic is given by $\chi^2=\frac{(O-E)^2}{E}$ with $df = (r - 1) \cdot (c - 1)$
+
+**Example**
+
+Let us take the example from Chapter 6 of the book Statisticis: An Introduction using R. We create the following table with the observed frequencies
+
+
+```{r}
+Blue_Eyes<- c(38, 14, 52)                  #create first column
+Brown_Eyes<- c(11, 51, 62)                 #create second column
+Row_Totals<- c(49, 65, 114)                #third column
+Table_1<- cbind(Blue_Eyes, Brown_Eyes, Row_Totals)#combine the columns
+row.names(Table_1)<- c('Fair_Hair', 'Dark_Hair', 'Column_Totals')#give names to rows
+Table_1
+``` 
+
+Our hypotheses state that
+
+$H_0: Hair \perp \!\!\!\perp Eyes$
+
+$H1: Hair \not\!\perp\!\!\!\perp Eyes$. 
+
+So, under the null hypothesis the two variables Eyes and Hair are assumed to be independent. This will help us to calculate the expected frequencies. 
+
+**Question**
+If the two variables Eyes and Hair are assumed to be independent, what can we calculate the probability of having dark hair and brown eyes? (Hint: If independent: the result is the product of the two probabilities).
+
+The probabilities of having Fair Hair and Blue Eyes, Fair Hair and Brown Eyes etc are calculated on the table below.
+
+```{r}
+Blue_Eyes<- c((49/114)*(52/114), (65/114)*(52/114), 52)                  #create first column
+Brown_Eyes<- c((49/114)*(62/114), (65/114)*(62/114), 62)                 #create second column
+Row_Totals<- c(49,65,114)                #third column
+Table_2=cbind(Blue_Eyes,Brown_Eyes,Row_Totals)#combine the columns
+row.names(Table_2)<- c('Fair_Hair', 'Dark_Hair', 'Column_Totals')#give names to rows
+Table_2
+``` 
+
+Now, we can calculate the expected frequencies, which would be the number in each cell multiplied by the Grand Total.
+
+```{r}
+Blue_Eyes<- c(114*(49/114)*(52/114), 114*(65/114)*(52/114), 52)                  #create first column
+Brown_Eyes<- c(114*(49/114)*(62/114), 114*(65/114)*(62/114), 62)                 #create second column
+Row_Totals<- c(49,65,114)                #third column
+Table_3<- cbind(Blue_Eyes, Brown_Eyes, Row_Totals)#combine the columns
+row.names(Table_3)<- c('Fair_Hair', 'Dark_Hair', 'Column_Totals')#give names to rows
+Table_3
+``` 
+
+As a rule, we can go from the first table to the last one ie from the observed frequencies to the expected frequencies for each cell by multiplied the row total by the column total and divided by the grand total ie $E=\frac{R \cdot C}{G}$, where R is the row total, C is the column total and G is the Grand total.
+
+We need to assess the differences between the observed and expected frequencies using a $\chi^2$ test (Pearson's chi-squared). We take the observed frequencies from the first table and the expected frequencies from the last table and find $\frac{(O-E)^2}{E}$ and then sum them.
+
+Thus, 
+
+```{r}
+FairHair_And_BlueEyes<- c(38, 22.35, (38-22.35)^2/22.35)
+FairHair_And_BrownEyes<- c(11, 26.65, (11-26.65)^2/26.65)
+DarkHair_And_BlueEyes<- c(14, 29.65, (14-29.65)^2/29.65)
+DarkHair_And_BrownEyes<- c(51, 35.35, (51-35.35)^2/35.35)
+Table_4<- rbind(FairHair_And_BlueEyes, FairHair_And_BrownEyes, DarkHair_And_BlueEyes, DarkHair_And_BrownEyes)
+colnames(Table_4)<- c('O', 'E', '(O-E)^2/E')
+Table_4
+
+chi_sq<- sum(10.96 + 9.19 + 8.26 + 6.93)
+chi_sq
+``` 
+
+Now, we need to compare the value provided by the chi-square with the critical value. Recall that the degrees of freedom are calculcated $df = (r - 1) \cdot (c - 1)$. We on the very first Table we had 2 rows and 2 columns ie $r=2$, $c=2$ and thus, $df=1$.
+
+Say that we want to use a significance level $\alpha=0.05$.
+
+```{r}
+qchisq(0.95, 1) #or can use qchisq(0.05,1,lower.tail=F) from Workshop 2
+``` 
+
+The critical value is 3.84 and the chi-square value is 35.34. The chi-square value is larger than the critical value, tus we cannot accept the null hypohtesis.
+
+We just did the example this way to understand the chi-square test. In R however, there is an easier way to do it.
+
+```{r}
+count<- matrix(c(38,14,11,51), nrow=2) #create the matrix with the observed frequencies
+count
+
+chisq.test(count, correct=F) #chi-square test without Yates's continuity correction
+``` 
+
+
+##Fisher's Exact Test
+
+The Fisher's Exact test is to test if there is association between variables in a contigency table concept, but for small samples (even though it can be used for large samples too- it is traditionally used for small ones). One can use it when at least one of the expected frequencies is less than 5.
+
+If we have the following table
+```{r fig.width=5, fig.height=3, warning=F,echo=FALSE,fig.align='center', fig.cap='2 by 2 table'}
+#INSERT FIGURE OF RStudio Screenshot   
+library(png)
+library(grid)
+img <- readPNG("table2by2.png")
+grid.raster(img)
+rm(img)
+```
+$n$ is the grand total. Then the probability of any particular outcome is given by $p=\frac{(a+b)!(c+d)!(a+c)!(b+d)!}{a!b!c!d!}$. The whole idea of the Fisher's Exact test is to find all the different ways of rearranging the cell frequencies of the table whilst keeping the marginal totals the same. After finding all the different ways, we need to calculate the probability $p$ given like above for each table. Then, there are three different ways that we work with, but we will only mention the most common one, and we will leave the critisism for all the methods to statisticians. Here, we add all the probabilities that are less or equal than the $p$ from the original table (including the $p$ found from the original table) and we use a two-tail hypothesis test.
+
+**Example**
+
+Let us return to the same Hair and Eyes example, but with smaller numbers.
+
+```{r}
+Blue_Eyes<- c(6, 2, 8)                  #create first column
+Brown_Eyes<- c(4, 8, 12)                 #create second column
+Row_Totals<- c(10, 10, 20)                #third column
+Table_5<- cbind(Blue_Eyes, Brown_Eyes, Row_Totals)#combine the columns
+row.names(Table_5)<- c('Fair_Hair', 'Dark_Hair', 'Column_Totals')#give names to rows
+Table_5
+
+p_1<- (factorial(8)*factorial(12)*factorial(10)*factorial(10))/(factorial(6)*factorial(2)*factorial(4)*factorial(8)*factorial(20))  
+#calculate the probability for this outcome
+p_1
+``` 
+
+Our hypotheses state that
+
+$H_0: Hair \perp \!\!\!\perp Eyes$
+
+$H1: Hair \not\!\perp\!\!\!\perp Eyes$. 
+
+So, under the null hypothesis the two variables Eyes and Hair are assumed to be independent (no association between them). Moving forward we need to consider more extreme cases and calculate their probability of occuring. Some of them include 7,1,3,9 and 8,0,2,10. After finding the probabilities foe each case, we can add the ones that are less than our $p_1$ and use a signifficance level $a$ to compare the results.
+
+If the final sum of $p_1$'s is less than $a$, then we have enough evidence to reject the null hypothesis. 
+
+However, one can use R without having to do what we mentioned above.
+
+```{r}
+x<- matrix(c(6,2,4,8), ncol=2)
+x
+
+fisher.test(x)
+``` 
+
+
+##Power, Type I and Type II errors and sample size
+
+```{r fig.width=5, fig.height=3, warning=F,echo=FALSE,fig.align='center', fig.cap='Type 1 and Type 2 error'}
+#INSERT FIGURE OF RStudio Screenshot   
+library(png)
+library(grid)
+img <- readPNG("type1and2errorpregnancy.png")
+grid.raster(img)
+rm(img)
+```
+
+When we perform a hypothesis test there are two possible outcomes. One is to fail to reject the null hypothesis and the other is to reject it. The true situation, however, is unknown to us. If we fail to reject the null hypothesis when it is true, then we made the right decision. If we reject the null hypothesis, however, when it is true then we would be making a Type I error. The probability of making this error is a (the pre-determined signifficance level, usually $\alpha=0.05$). Another error that may make is fail to reject the null hypothesis when in fact it not true. This is called a Type II error and the probability of this happening is $\beta$=1-power of the study. the power is defined as the probability that a hypothesis test rejects the null hypothesis when the null hypothesis is, in fact, false. 
+
+
+Truth Table                 |  $H_0$ True                     | $H_0$ false                             
+--------------------------- | ------------------------------- | --------------------------------------- 
+Test says: Accept $H_0$     |  True Accept: (1-a)             | False Accept: Type II error ($\beta$)   
+Test says: Reject $H_0$     |  False Reject: Type I error (a) | True Reject: Power (1-$\beta$)          
+
+
+Usual significance level is $\alpha=0.05$ and power=0.8. If we want to decrease the probability of having a Type II error, then we can increase the power of the study to 0.9 or 90\%.
+
+
+**The power of a test is affected by a number of different things:**
+
+1. The significance level. Tests with a lower level have a lower power.
+2. The sample size. A larger sample size means more power.
+3. The standard deviation of the data. If the data are very spread, it is harder to tell the difference between two means - hence the power is lower.
+4. The effect size. i.e. the true difference between the two groups. The larger this is, the easier it is to spot in the data, and hence, the larger the power.
+
+Power analysis is a very important statistical exercise. For example, it is used to decide how large a clinical trial should be. This usually proceeds by fixing a level (5% is most common), fixing a desired power (80 or 90% are common choices), having an estimate in advance of the standard deviation (e.g. from a pilot study), and deciding on what effect size we are looking for. The effect size may be based on a combination of pilot data, data from similar studies in the past, and expert knowledge on what size of difference is practically (rather than statistically) meaningful.
+A statistician will elicit this information and calculate the required sample size. This short introduction is designed to give an appreciation of the issues involved - you should always consult a statistician (or, e.g. NIHR research design service) for power analysis and sample size calculation.
+
+**Note**
+Type III error is correctly rejecting the null hypothesis but for the wrong reason.
+
+
+##Summary Table
+
+Summary Table                                           |  Test
+--------------------------------------------------------|--------------------------------------------------
+comparing variances of two samples                      |  Fisher's F Test
+comparing means between two independent groups          |  Unpaired T-test
+comparing medians between two independent groups        |  Wilcoxon rank-sum test (Mann-Whitney U)
+comparing means of two dependent groups                 |  Paired T-test
+comparing medians of two dependent groups               |  Wilcoxon signed rank test
+comparing two proportions                               |  Binomial Test, Normal Approximation, Chi-square Test
+comparing counts in contigency tables                   |  Chi-squared Test, Fisher's Exact Test
+
+
+## Sensitivity
+
+## Specificity
+
+## Accuracy
+
+## Agreement
+
+## Bad hypotheses
+
+
+# Bayesian Statistics
+
+## Conditional Probability and Inference
+
+## Bayes' Theorem and Law of Total Probability
+
+## Coin Toss Example
+
+Suppose that we are tossing a coin $n = 100$ times and we get number of heads $n_{H} = 48$ and number of tails $n_{T} = 52$. 
+
+Let $X$ denote the random variable of the number of times that a head appeared. Then $X$ follows a Binomial Distribution with a probability of success  $p$.
+
+We want to examine if we are holding a fair coin ie if $p = 0.5$.
+
+So, 
+
+$H_{0}:$ the coin is fair
+
+$H_{1}:$ the coin is not fair.
+
+
+### Frequentist Approach
+
+### Bayesian Approach
+
+We want to assign the probability that either of the two hypothese is true to be equal. Thus, $p(H_{0}) = p(H_{1}) = 0.5$.
+
+The reason we do that is because we want a non-informative prior (most objective option) that will assign equal probabilities to all possibilities.
+
+The posterior probability of our null hypothesis $H_{0}$ given the number of heads $n_{H}$ observed is:
+
+$P(H_{0}| n_{H}) = \frac{P(n_{H}|H_{0}) P(H_{0})}{P(n_{H}|H_{0}) P(H_{0}) + P(n_{H}|H_{1}) P(H_{1})}$.
+
+
+
+
+## Lindley's Paradox
+
+## Uncertainty (Bayesian and Frequentist inference)
+
+# Linear Regression (statsmodels)
+
+## Linear Model
+
+```{python}
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0,100,100)
+y = 2*x + 0
+z = 2*x + 25
+w = x + 0
+
+plt.plot(x, y, '-b', label = 'y = 2x + 0')
+plt.plot(x, z, '-r', label = 'y = 2x + 25')
+plt.plot(x, w, 'g', label = 'y = x + 0')
+
+plt.title('Graphs')
+plt.legend(loc='upper left')
+plt.grid()
+plt.show()
+plt.close()
+```
+
+##Scatterplot
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(5)
+p = np.arange(1, 101)
+q = 2 * p + np.random.normal(0, 15, 100)
+
+# Plot
+plt.scatter(p, q)
+plt.plot(x, y, '-r', label = 'y = 2x + 0')
+plt.title('Scatter plot')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+plt.close()
+```
+
+## Assumptions
+
+$y_i = ax_i + b + e_i$
+
+1. The predictors are measured without an error (can be treated as fixed values)
+
+2. Linear relationship between the reponse and the predictors (or their transformation)
+
+3. The variation around the regression line is constant (does not depend on the observed values) ie variance is constant (homoscedasticity)
+
+4. The variation around the regression line is normally distributed
+
+5. The observations are independent
+
+
+**Note: **
+
+4. and 5. essentially shape that the errors are independenent (not correlated) and normally distributed (iid- independent and identically distributed)
+
+A linear regression including two or more explanatory variables is called multiple linear regression.
+
+## Model Fitting and Interpretation
+
+```{python}
+import statsmodels.api as sm
+
+linear_model = sm.OLS(q, p)
+print(linear_model.fit().summary())
+```
+
+coef: estimated regression coefficient 
+
+std err: standard error of the estimated parameter
+
+t: t-statistic which is the ratio of the coef and std err
+
+P>|t|: p-value corresponds to t-test
+
+[0.025, 0.975]: confidence interval for our estimates
+
+R-squared: the proportion of the total variation explained by the regression model. The closer the value it is to 1, the better the model it is.
+
+Adj. R-squared: similar to R-squared, but considering the degrees of freedom into account.
+
+F-statistic: this is used for testing the null hypothesis against the alternative hypothesis:
+
+$H_{0}:$ The regression parameters of all the explanatory variables are zero
+
+$H_{1}:$ At least one of the regression parameters is non-zero.
+
+## Checking Assumptions (Regression Diagnostics)
+
+### Linearity
+
+#### Visual Linearity Test
+
+```{python}
+from matplotlib import pyplot as plt
+import numpy as np
+
+def plot_a_straight_line(slope, intercept):
+    axes = plt.gca()
+    x_axis_values = np.array(axes.get_xlim())
+    y_axis_values = intercept + slope * x_axis_values
+    plt.plot(x_axis_values, y_axis_values, '--')
+```
+
+```{python}
+predicted_values = linear_model.predict(linear_model.fit().params)
+
+plt.plot(predicted_values,q,'o')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Predicted vs. Actual Values: Visual Linearity Test')
+plt.tick_params(axis='x', colors='white')
+plt.tick_params(axis='y', colors='white')
+plot_a_straight_line(1,0)
+plt.show()
+plt.close()
+```
+
+#### Linearity Test (Harvey-Collier)
+
+The Null hypothesis is that the regression is correctly modeled as linear.
+
+```{python}
+import statsmodels.stats.api as sms
+
+sms.linear_harvey_collier(linear_model.fit())
+```
+
+### MultiCollinearity
+
+
+
+### Normality of Errors
+
+Checking whether the (standardized) residuals form a straight line in the normal Q-Q plot approximately.
+
+```{python}
+import pylab 
+import scipy.stats as stats 
+
+residuals = q - predicted_values
+
+stats.probplot(residuals, dist="norm", plot=pylab) 
+pylab.title('QQ Plot: Test Gaussian Residuals') 
+pylab.show()
+pylab.close()
+```
+
+### Heteroskedasticity
+
+
+
+
+
+### Independence
+
+## Model Checking
+
+
+## Model Selection 
+
+### Why we need it
+
+1. Easier to interpret a smaller model
+
+2. Reduce the cost of measuring explanatory variables
+
+3. Unnecessary explanatory variables create unnecessary noise (unnecessary variance of prediction).
+
+4. For small sizes, we cannot have a large number of explanatory variables (rule of thumb: 10-20 observations per parameter is needed to detect effects with reasonable power).
+
+### How do it
+
+The most common approach is backward selection. We start with the most complicated model that we think it could fit our data. We set a signifficance level and check the p-values by t-test or by F-test. We remove the non-signifficant variables one by one, starting with the most non-signifficant one. We are not removing them simultaneously, because this may result in information loss. At each stage, we remove the variable and we re-run the model because the estimates and the p-values usually change.
+
+
+**Note:** There is also forward selection. We start with the null model (no explanatory variables included) and add one explanatory variable at a time. 
+
+## Model Comparison
+
+### Akaike Information Criterion (AIC)
+
+The AIC measures the quality of the model. We usually prefer and select the model with the smallest AIC value.  
+
+$AIC = n \log (\frac{RSS}{n}) + 2k$,
+
+were $n$ is the number of observations, $k$ is the number of parameters in the regression and $RSS$ is the residual sum of squares.
+
+### Bayesian Information Criterion (BIC)
+
+$BIC = n \log (\frac{RSS}{n}) + k \log(n)$.
+
+BIC is normally larger than the AIC for the same model. We usually prefer and select the model with the smallest BIC again. We tend to use both criteria for model selection.
+
+
+# Generalised Linear Models
+
+
+## Normal
+
+## Poisson 
+
+## Binomial
+
+
+# Dimensionality Reduction 
+
+## What it is 
+
+Dimensionality Reduction is the process of reducing the amount of random variables that we are considering to work with, by obtaining a new set of variables. There are basically two strategies to achieve dimensionality reduction: feature selection and feature extraction. 
+
+## Why we need it
+
+The more variables we have, the harder it becomes to visualize the dataset, some variables are correlated (redundant). More variables means more storage and that we need more processing power. 
+
+Suppose that we have a dataset which includes the characteristics of a car. Suppose that the age of the car and the mileage of the car are correlated (which makes sense) then we woulc merge those two into one variable. 
+
+## Advantages and Disadvantages
+
+**Advantages:**
+
+1. It helps to compress the data (reduced storage space).
+
+2. It reduces computation time.
+
+3. It helps to remove redundant variables (if any).
+
+**Disadvantages:** 
+
+1. It could lead to data loss.
+
+
+## Factor Analysis (FA)
+
+## Principal Component Analysis (PCA)
+
+## Independent Component Analysis (ICA)
+
+## t-Distributed Stochastic Neighbour Embedding (t-SNE)
+
+# Missing Values
+
+## Missing Data Examples
+
+1. Survey Questionnaires: Participants not answering a question because he does not know the answer, does not understand the question or simply refuses to answer it
+
+2. Routinely Collected Data: This is collected without a specific research question in mind. If we want to use primary care data and we need the Blood Pressure measurement it may not be available for all the patients.
+
+3. Longitudinanl Follow-Up: Some individuals may drop out or they may be lost in follow up. 
+
+## Missingness Mechanisms
+
+MCAR (Missing Completely At Randon): The data missing does not depend on any data, observed or unobserved.
+
+MAR (Missing At Random): The data is missing at random and the missingness mechanism depends on the observed data.
+
+NMAR (Not Missing At Random): The data is not missing at random and the missingness mechanism depends on observed and unobserved data.
+
+MAR and NMAR are opposites, while MCAR is a special case of MAR.
+
+## Complete-Case Analysis
+
+We delete any record that is incomplete and has missing data. It is the simplest approach of all. 
+
+It is only appropriate if the data is MCAR. 
+
+If there is a lot of missing data, then by removing it we reduce the sample size. 
+
+If the missingess mechanism is correlated with the outcome that we are interested in then, the statistical tests will provide biased results.
+
+Intermediate Approach: Discard the records that have missing data on the variables used in the specific analysis (available-case analysis).
+
+It can be more informative than complete-case analysis.
+
+It is only appropriate if the data is MCAR, however. 
+
+More efficient is correlation between variables is low (vice-versa for complete-case analysis).
+
+Technical issues from combining information from different observations.
+
+## Single Imputation
+
+Replace each values with another value (one only). Then, analyze data using observed and imputed data.
+
+Confidence intervals are narrow and standard errors are small showing more confidence in our estimates than we should (created something from nothing).
+
+Biased estimates if imputation was not performed in an appropriate way.
+
+### Mean, Median, Mode
+
+Impute the mean, median or mode for the whole variable 
+
+### Hot-Deck Imputation
+
+For each sub-group fill in the missing values based on the other values within the sub-group.
+
+It can avoid bias in cases of MCAR and MAR, if we stratify on the covariates that the missing data depends on.
+
+Same issues with confidence intervals though (over-confidence in our estimates).
+
+### Regression
+
+This is an extension of the mean imputation. 
+
+We specify a regression model to predict the missing values, but there are questions that need to be answered eg. are the assumptions of the model justified, are there any good predictors, and what happens if there is missing data in the predictors too.
+
+Correlations are inflated because all the imputations-predictions rely on the line of the best fit
+
+### Stochastic Regression
+
+Stochastic regression slightly improves the regression method. In this method, we move each imputed value away from the regression line by a random amount. This random amount is determined by the residual term of the regression model. Usually, the residual term is normally distributed with a zero mean and a variance equal to the residual variance from the regression of the predictor on the outcome. By doing that, we preserve the variability of the data and we can have unbiased estimates with MAR data. 
+
+**Note:** standard errors are underestimated because we did not considered the uncertainty of the imputed values and this increases the risk of Type I errors.
+
+
+## Multiple Imputation
+
+Multiple imputation generalises regression imputation. It is suitable for when we:
+
+Have mutiple variables with missing data and we want to impute all of them
+
+Want to use any variable as a predictor in the regression imputation for any variable and there is missingness all over the place
+
+Want to consider the fact that 'we are making up the data' and thus, avoiding over-optimism
+
+The multiple imputation that we will talk here is only appropriate when the data is MCAR or MAR, not when it is NMAR.
+
+
+**Steps:**
+
+1. We impute missing values for each variable by deriving a regression equation using the other variables as predictors (the ones that we think that affect the missing value). Some predictors may have missing values themselves, but using we can overcome this by chaining the equations together, which means that we fill all the missing data simultaneously (stochastic regression).
+
+2. We repeat Step 1 a few times (say 10 times). This means that we would have 10 datasets that have different imputed values (this is due to the randomness that comes from the stochastic part).
+
+3. We fit our model in each of these datasets.
+
+4. Due to the fact that we have many datasets, we can capture the ``optimism'' (ie there is variability in the parameter estimates between all the datasets. This shows that we are not certain about the values that imputed). This is visible in our standard errors. They will be larger showing this uncertainty.
+
+**Note:**
+
+1. Other ways to deal with MAR is either using an EM algorithm and evaluate the likelihood directly or treat missing values as parameters (Bayesian Statistics)
+
+2. NMAR is hard to impute because we do not know the missingness mechanism. We only try and make a 'good guess' eg For patients that have had a stend procedure, cardiologists fill in information about the patients' comorbidities ('yes' or 'no' if they have a specific comorbidity or not respectively eg. if they have diabetes). If they do not make a selection, we have missing values. We spoke to the cardiologists and we applied this thought: if the patient has a comorbodity the cardiologist would have chose as 'yes', if not we would not record it. Thus, we considered that the majority of missing value cases the value should have been 'no'.   
+
+## Exercises
+
+# Data Issues 
+
+## Accuracy
+
+## Quality
+
+## Privacy 
+
+## Dimensionality
+
+### Overfitting
+
+### Non-identifiability
+
+### Non-collapsibility
+
+## Assumptions
+
+## Limitations
+
+
+# Case-Studies
