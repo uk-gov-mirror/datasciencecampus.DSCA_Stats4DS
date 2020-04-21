@@ -1,5 +1,5 @@
 ---
-title: "Robust Stats"
+title: "Statistics for Data Science"
 author: "Laurie Baker"
 date: "03/12/2019 - 05/12/2019"
 output: 
