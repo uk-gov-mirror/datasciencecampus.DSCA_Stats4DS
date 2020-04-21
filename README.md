@@ -1,5 +1,7 @@
 # Stats4DS
 
+## Course Overview and Learning Objectives 
+
 **Brief Description:** 
 
 This course introduces the basics of carrying out a statistical analysis in Python. It covers exploratory data analysis, constructing and interpreting linear and generalized linear models, and introduces Bayesian modelling. 
@@ -66,3 +68,18 @@ By the end of Chapter 4, learners should know
 * What is Baye's rule and how it is used in Bayesian statistics?
 * How Bayesian and Frequentist schools of thought differ?
 * How to implement a simple Bayesian linear model in python.
+
+## Rough guide to files
+
+The self-learning materials (notes) is all in Stats4DS.html. The slides for this material are in "Stats4DS_Slides.html (Chapters 1, 2, 3), and Intro_Bayes_Slides.html (Chapter 4)". 
+
+The self-learning material makes reference to different practicals which are independent notebooks in the Practicals folder. The order of the practicals is as follows:
+
+1. Exploratory Data Analysis (Chapter 1)
+2. Generalized Linear Models (Chapter 3)
+3. Intro_Bayes (Chapter 4)
+
+Each practical has a python notebook and instructions are self-contained. 
+
+There are also short-exercises within the self-learning materials.
+
