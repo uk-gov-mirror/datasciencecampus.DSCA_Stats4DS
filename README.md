@@ -1,6 +1,6 @@
 # Statistics for Data Science
 
-### Version 1
+### Version 1.0
 
 **Course Summary**
 
@@ -11,9 +11,11 @@ This course introduces the basics of carrying out a statistical analysis in Pyth
 By the end of the course students will be comfortable implementing and interpreting linear models and generalized linear model in Python and be familiar with the concepts of Bayesian modelling.
 
 **Lead Developer**
-Laurie Baker
+
+Laurie Baker, Dan Lewis
 
 **Course Reviewer(s)**
+
 Pending
 
 **Intended Audience**
@@ -25,6 +27,7 @@ This course is intended for those interested in learning and applying linear and
 By the end of the course students will be comfortable implementing and interpreting linear models and generalized linear model in Python and be familiar with the concepts of Bayesian modelling.
 
 **Course Type** (Fixed length list.)
+
 * E learning - Not Available
 * Self learning - Available
 * Face to face - Available
