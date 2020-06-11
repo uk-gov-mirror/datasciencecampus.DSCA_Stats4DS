@@ -6,7 +6,7 @@
 
 This course introduces the basics of carrying out a statistical analysis in Python. It covers exploratory data analysis, constructing and interpreting linear and generalized linear models, and introduces Bayesian modelling. 
 
-**Learning Outcome**
+**Learning Objective**
 
 By the end of the course students will be comfortable implementing and interpreting linear models and generalized linear model in Python and be familiar with the concepts of Bayesian modelling.
 
@@ -22,46 +22,7 @@ Pending
 
 This course is intended for those interested in learning and applying linear and generalized linear modelling to their work. And those interested in learning more about concepts in Bayesian modeling. 
 
-**Learning Objective**
-
-By the end of the course students will be comfortable implementing and interpreting linear models and generalized linear model in Python and be familiar with the concepts of Bayesian modelling.
-
-**Course Type** (Fixed length list.)
-
-* E learning - Not Available
-* Self learning - Available
-* Face to face - Available
-
-**Skill Level**
-
-Participants should be familiar with Python but do not need any prior statistical training. 
-
-**Pre requisite summary** 
-
-Introduction to Python.
-
-**Pre-requisites**
-
-Package requirements: 
-import numpy as np # linear algebra
-import pandas as pd # data processing
-import matplotlib.pyplot as plt # data plotting
-import seaborn as sns # data visualisation and plotting
-import statsmodels.api as sm # statistical modelling package
-import statsmodels.formula.api as smf # statistical modelling package with R-like formulas
-import scipy.stats as stats
-import math
-
-from statsmodels.genmod.generalized_linear_model import GLM # importing packages to run GLM
-from statsmodels.genmod import families # importing families for exponential families
-from scipy.stats import binom # to illustrate the binomial distribution.
-from sklearn import datasets, linear_model # fetching iris dataset and linear model functions
-from sklearn.metrics import mean_squared_error, r2_score
-
-
-**Learning objectives:** 
-
-
+**Learning Objective Detail**
 ### Chapter 1: Exploratory Data Analysis
 
 By the end of Chapter 1, learners should know:
@@ -123,6 +84,39 @@ By the end of Chapter 4, learners should know
 * What is Baye's rule and how it is used in Bayesian statistics?
 * How Bayesian and Frequentist schools of thought differ?
 * How to implement a simple Bayesian linear model in python.
+
+
+**Course Type**
+
+* E learning - Not Available
+* Self learning - Available
+* Face to face - Available
+
+**Skill Level**
+
+Participants should be familiar with Python but do not need any prior statistical training. 
+
+**Pre requisite summary** 
+
+Introduction to Python.
+
+**Pre-requisites**
+
+Package requirements: 
+import numpy as np # linear algebra
+import pandas as pd # data processing
+import matplotlib.pyplot as plt # data plotting
+import seaborn as sns # data visualisation and plotting
+import statsmodels.api as sm # statistical modelling package
+import statsmodels.formula.api as smf # statistical modelling package with R-like formulas
+import scipy.stats as stats
+import math
+
+from statsmodels.genmod.generalized_linear_model import GLM # importing packages to run GLM
+from statsmodels.genmod import families # importing families for exponential families
+from scipy.stats import binom # to illustrate the binomial distribution.
+from sklearn import datasets, linear_model # fetching iris dataset and linear model functions
+from sklearn.metrics import mean_squared_error, r2_score
 
 
 **Order of material list** 
