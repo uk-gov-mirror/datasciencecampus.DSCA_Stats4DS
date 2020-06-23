@@ -6,7 +6,7 @@
 
 This course introduces the basics of carrying out a statistical analysis in Python. It covers exploratory data analysis, constructing and interpreting linear and generalized linear models, and introduces Bayesian modelling. 
 
-**Learning Objective**
+**Course Objective**
 
 By the end of the course students will be comfortable implementing and interpreting linear models and generalized linear model in Python and be familiar with the concepts of Bayesian modelling.
 
