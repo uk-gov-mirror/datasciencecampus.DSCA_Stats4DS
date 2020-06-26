@@ -1,10 +1,10 @@
 # Statistics for Data Science
 
+### Version 1.0
+
 **Course Duration**
 
 18 Hours
-
-### Version 1.0
 
 **Course Summary**
 
