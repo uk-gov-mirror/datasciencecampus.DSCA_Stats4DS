@@ -37,13 +37,8 @@ By the end of Chapter 1, learners should know:
     *   What is the difference between a continuous and categorical variable?
     *   What is variation and covariation?
 *  Where Exploratory Data Analysis fits within data analysis?
-    *   How to use plots to explore variation in 
-        * A continuous variable
-        * A categorical variable
-    *   How to use plots to explore covariation between
-        * Two categorical variables
-        * Two continuous variables
-        * A categorical and continuous variable. 
+    *   How to use plots to explore variation in continuous variable and categorical variables
+    *   How to use plots to explore covariation between two categorical variables, two continuous variables or a categorical and continuous variable. 
 
 ### Chapter 2: Model Basics
 
